@@ -1,0 +1,59 @@
+{% extends "customerbase.html" %}
+{% block title %}OLIVIA - Display Event{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+<table class="table">
+    {% for event in events_list %}
+    <tbody>
+        <tr>
+            <td>Title:</td>
+            <td>{{ event.get_title() }}</td>
+        </tr>
+        <tr aria-colspan="2">
+            <td>Start Date & Time:</td>
+            <td>{{ event.get_start_date() }}</td>
+            <td>{{ event.get_start_time() }}</td>
+        </tr>
+        <tr aria-colspan="2">
+            <td>End Date & Time:</td>
+            <td>{{ event.get_end_date() }}</td>
+            <td>{{ event.get_end_time() }}</td>
+        </tr>
+        <tr>
+            <td>Description:</td>
+            <td>{{ event.get_description()}}</td>
+        </tr>
+        <tr>
+            <td>Location:</td>
+            <td>{{ event.get_location()}}</td>
+        </tr>
+        <tr>
+            <td>Price:</td>
+            <td>{{ event.get_price()}}</td>
+        </tr>
+        <tr>
+            <td>Category:</td>
+        {% if event.get_category() == "F" %}
+          <td>Fashion Show</td>
+        {% elif event.get_category() == "S" %}
+          <td>Sales</td>
+        {% elif event.get_category() == "W" %}
+          <td>Workshop</td>
+        {% endif %}
+        </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+<form method="POST" action="">
+<div class="form-group">
+    {{ render_field(form.attendance, class="form-control p-2 border border-dark") }}
+    {% if error %}
+    <p class="text text-danger"><strong> Error:</strong> {{ error }}</p>
+    {% endif %}
+</div>
+    <br>
+<input type="submit" value="Submit" class="btn btn-primary"/>
+</form>
+<br>
+{% endblock %}

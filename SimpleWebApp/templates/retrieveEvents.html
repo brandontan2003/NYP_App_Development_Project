@@ -1,0 +1,254 @@
+{% extends "adminbase.html" %}
+{% block title %}OLIVIA - Events{% endblock %}
+{% block body %}Event Overview{% endblock %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<h1 class="display-4">Events Dashboard</h1>
+<div id='chart' class='chart'></div>
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script type='text/javascript'>
+  var graphs = {{graphJSON | safe}};
+  Plotly.plot('chart',graphs,{});
+</script>
+<br>
+<br>
+<h1 class="display-4">Events Overview</h1>
+<div align="right"><a class="btn btn-success" href="/createEvent">Create Event</a></div>
+<div>
+  {% if count == 0 %}
+  <p>There are no events.</p>
+  {% elif count == 1 %}
+  <p>There is 1 event.</p>
+  {% else %}
+  <p>There are {{ count }} events.</p>
+  {% endif %}
+</div>
+
+<div align="right">
+  <span style="font-weight: bold;">Search:</span>
+  <input type="text" id='upcoming' name='search' placeholder="" class="p-2 border border-dark rounded-3">
+</div>
+
+<div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                <h6 class="text-white text-capitalize ps-3">Upcoming Events</h6>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0" id="upcoming_events">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-m font-weight-bolder opacity-7">Type of Events</th>
+                      <th class="text-uppercase text-secondary text-m font-weight-bolder opacity-7 ps-2">Title</th>
+                      <th class="text-left text-uppercase text-secondary text-m font-weight-bolder opacity-7" colspan="2">Date</th>
+                      <th class="text-center text-uppercase text-secondary text-m font-weight-bolder opacity-7">Category</th>
+                      <th class="text-center text-uppercase text-secondary text-m font-weight-bolder opacity-7">Location</th>
+                      <th class="text-center text-uppercase text-secondary text-m font-weight-bolder opacity-7">Registration Rate</th>
+                      <th class="text-secondary opacity-7"></th>
+                    </tr>
+                  </thead>
+                      {% for event in upcoming_events_list %}
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            {% if event.get_event_type() == "Single Event" %}
+                            <span class="text-m font-weight-bold mb-0" style="color:purple">{{ event.get_event_type() }}</span>
+                            {% elif event.get_event_type() == "Recurring Event" %}
+                            <span class="text-m font-weight-bold mb-0" style="color:teal">{{ event.get_event_type() }}</span>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="text-m font-weight-bold mb-0">{{ event.get_title() }}</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-m font-weight-bold">{{ event.get_start_date() }}</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-m font-weight-bold">{{ event.get_end_date() }}</span>
+                      </td>
+                      {% if event.get_category() == "F" %}
+                      <td class="align-middle text-center"><span class="text-secondary text-m font-weight-bold">Fashion Show</span></td>
+                      {% elif event.get_category() == "S" %}
+                      <td class="align-middle text-center"><span class="text-secondary text-m font-weight-bold">Sales</span></td>
+                      {% elif event.get_category() == "W" %}
+                      <td class="align-middle text-center"><span class="text-secondary text-m font-weight-bold">Workshop</span></td>
+                      {% endif %}
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-m font-weight-bold">{{ event.get_location()}}</span>
+                      </td>
+                      {% if event.get_registration() == "Y" %}
+                      {% if attending_dict[event.get_event_id()] / event.get_pax() | int == 0 %}
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-danger"><a href="/eventData/{{event.get_event_id()}}" class="text text-light font-weight-bold">{{ attending_dict[event.get_event_id()] }} / {{ event.get_pax() }}</a></span>
+                      </td>
+                      {% elif attending_dict[event.get_event_id()] / event.get_pax() | int <= 0.5 %}
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-warning"><a href="/eventData/{{event.get_event_id()}}" class="text text-light font-weight-bold">{{ attending_dict[event.get_event_id()] }} / {{ event.get_pax() }}</a></span>
+                      </td>
+                      {% elif attending_dict[event.get_event_id()] / event.get_pax() | int <= 0.75 %}
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-warning"><a href="/eventData/{{event.get_event_id()}}" class="text text-light font-weight-bold">{{ attending_dict[event.get_event_id()] }} / {{ event.get_pax() }}</a></span>
+                      </td>
+                      {% elif attending_dict[event.get_event_id()] / event.get_pax() | int >= 0.75 %}
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-success"><a href="/eventData/{{event.get_event_id()}}" class="text text-light font-weight-bold">{{ attending_dict[event.get_event_id()] }} / {{ event.get_pax() }}</a></span>
+                      </td>
+                      {% endif %}
+                      {% elif  event.get_registration() == "N" %}
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-info">No Registration Required</span>
+                      </td>
+                      {% endif %}
+                      <td><a class="btn btn-warning" href="/updateEvent/{{event.get_event_id()}}">Update</a></td>
+                    </tr>
+                      {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+
+<div align="right">
+  <span style="font-weight: bold;">Search:</span>
+  <input type="text" id='past' name='search' placeholder="" class="p-2 border border-dark rounded-3">
+</div>
+
+<div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                <h6 class="text-white text-capitalize ps-3">Past Events</h6>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0" id="past_events">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-m font-weight-bolder opacity-7">Type of Events</th>
+                      <th class="text-uppercase text-secondary text-m font-weight-bolder opacity-7 ps-2">Title</th>
+                      <th class="text-left text-uppercase text-secondary text-m font-weight-bolder opacity-7" colspan="2">Date</th>
+                      <th class="text-center text-uppercase text-secondary text-m font-weight-bolder opacity-7">Category</th>
+                      <th class="text-center text-uppercase text-secondary text-m font-weight-bolder opacity-7">Location</th>
+                      <th class="text-center text-uppercase text-secondary text-m font-weight-bolder opacity-7">Registration Rate</th>
+                    </tr>
+                  </thead>
+                      {% for event in past_events_list %}
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            {% if event.get_event_type() == "Single Event" %}
+                            <span class="text-m font-weight-bold mb-0" style="color:purple">{{ event.get_event_type() }}</span>
+                            {% elif event.get_event_type() == "Recurring Event" %}
+                            <span class="text-m font-weight-bold mb-0" style="color:teal">{{ event.get_event_type() }}</span>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="text-m font-weight-bold mb-0">{{ event.get_title() }}</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-m font-weight-bold">{{ event.get_start_date() }}</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-m font-weight-bold">{{ event.get_end_date() }}</span>
+                      </td>
+                      {% if event.get_category() == "F" %}
+                      <td class="align-middle text-center"><span class="text-secondary text-m font-weight-bold">Fashion Show</span></td>
+                      {% elif event.get_category() == "S" %}
+                      <td class="align-middle text-center"><span class="text-secondary text-m font-weight-bold">Sales</span></td>
+                      {% elif event.get_category() == "W" %}
+                      <td class="align-middle text-center"><span class="text-secondary text-m font-weight-bold">Workshop</span></td>
+                      {% endif %}
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-m font-weight-bold">{{ event.get_location()}}</span>
+                      </td>
+                      {% if event.get_registration() == "Y" %}
+                      {% if attending_dict[event.get_event_id()] / event.get_pax() | int == 0 %}
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-danger"><a href="/eventData/{{event.get_event_id()}}" class="text text-light font-weight-bold">{{ attending_dict[event.get_event_id()] }} / {{ event.get_pax() }}</a></span>
+                      </td>
+                      {% elif attending_dict[event.get_event_id()] / event.get_pax() | int <= 0.5 %}
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-warning"><a href="/eventData/{{event.get_event_id()}}" class="text text-light font-weight-bold">{{ attending_dict[event.get_event_id()] }} / {{ event.get_pax() }}</a></span>
+                      </td>
+                      {% elif attending_dict[event.get_event_id()] / event.get_pax() | int <= 0.75 %}
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-warning"><a href="/eventData/{{event.get_event_id()}}" class="text text-light font-weight-bold">{{ attending_dict[event.get_event_id()] }} / {{ event.get_pax() }}</a></span>
+                      </td>
+                      {% elif attending_dict[event.get_event_id()] / event.get_pax() | int >= 0.75 %}
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-success"><a href="/eventData/{{event.get_event_id()}}" class="text text-light font-weight-bold">{{ attending_dict[event.get_event_id()] }} / {{ event.get_pax() }}</a></span>
+                      </td>
+                      {% endif %}
+                      {% elif  event.get_registration() == "N" %}
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-info">Not Available</span>
+                      </td>
+                      {% endif %}
+                    </tr>
+                      {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+<script>
+$(document).ready(function(){
+  $('#upcoming').keyup(function(){
+    search_table($(this).val());
+  });
+  function search_table(value){
+    $('#upcoming_events tbody').each(function(){
+      var found = 'false';
+      $(this).each(function(){
+        if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){
+          found = 'true';}});
+          if(found == 'true')
+          {$(this).show();}
+          else
+          {$(this).hide();}});
+        }
+      });
+$(document).ready(function(){
+  $('#past').keyup(function(){
+    search_table($(this).val());
+  });
+  function search_table(value){
+    $('#past_events tbody').each(function(){
+      var found = 'false';
+      $(this).each(function(){
+        if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){
+          found = 'true';}});
+          if(found == 'true')
+          {$(this).show();}
+          else
+          {$(this).hide();}});
+        }
+      });
+</script>
+{% endblock %}
+

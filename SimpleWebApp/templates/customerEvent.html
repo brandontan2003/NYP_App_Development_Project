@@ -1,0 +1,104 @@
+{% extends "customerbase.html" %}
+{% block title %}Customer Event{% endblock %}
+
+{% block content %}
+<section class="hero-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12 col-12 custom-padding-right">
+                <div class="slider-head">
+                    <div class="hero-slider">
+                        <div class="single-slider"
+                             style="background-image: url({{ url_for('static', filename= 'img/Banner1.png') }});">
+                        </div>
+                        <div class="single-slider"
+                             style="background-image: url({{ url_for('static', filename= 'img/Banner2.png') }});">
+                        </div>
+                        <div class="single-slider"
+                             style="background-image: url({{ url_for('static', filename= 'img/Banner3.png') }});">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<br>
+<br>
+<br>
+
+<section class="upcoming-event section" style="margin-top: 12px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2>Upcoming Events</h2>
+                </div>
+            </div>
+            {% for event in upcoming_events_list %}
+            {% if event.get_registration() == "Y" %}
+            {% if attending_dict[event.get_event_id()] / event.get_pax() | int < 0.75 %}
+            <div class="col-lg-3 col-md-6 col-12">
+                <div class="event">
+                    <div class="event-image">
+                        <a href="/displayEvent/{{event.get_event_id()}}"><img src="{{ url_for('static', filename= 'img/'+ event.get_image()) }}" width="500px" height="250px"></a>
+                    </div>
+                    <div class="event-info">
+                        <h4 class="title">
+                            <a href="/displayEvent/{{event.get_event_id()}}">{{ event.get_title() }}</a>
+                        </h4>
+                        <span>Date: {{ event.get_start_date() }}</span>
+                    </div>
+                </div>
+            </div>
+            {% elif 0.75 < attending_dict[event.get_event_id()] / event.get_pax() | int < 1 %}
+            <div class="col-lg-3 col-md-6 col-12">
+                <div class="event">
+                    <div class="event-image">
+                        <a href="/displayEvent/{{event.get_event_id()}}"><img src="{{ url_for('static', filename= 'img/'+ event.get_image()) }}" width="500px" height="250px"></a>
+                    </div>
+                    <div class="event-info">
+                        <h4 class="title">
+                            <a href="/displayEvent/{{event.get_event_id()}}">{{ event.get_title() }}</a>
+                        </h4>
+                        <span>Date: {{ event.get_start_date() }}</span>
+                        <h5 class="text text-warning font-weight-bold">Limited Slots Left</h5>
+                    </div>
+                </div>
+            </div>
+            {% elif attending_dict[event.get_event_id()] / event.get_pax() | int == 1 %}
+            <div class="col-lg-3 col-md-6 col-12">
+                <div class="event">
+                    <div class="event-image">
+                        <a href="/displayEvent/{{event.get_event_id()}}" class="disabled" onclick="return false"><img src="{{ url_for('static', filename= 'img/'+ event.get_image()) }}" width="500px" height="250px"></a>
+                    </div>
+                    <div class="event-info">
+                        <h4 class="title">
+                            <a href="/displayEvent/{{event.get_event_id()}}" class="disabled" onclick="return false">{{ event.get_title() }}</a>
+                        </h4>
+                        <span>Date: {{ event.get_start_date() }}</span>
+                        <h5 class="text text-danger font-weight-bold">Fully Booked</h5>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% elif  event.get_registration() == "N" %}
+            <div class="col-lg-3 col-md-6 col-12">
+                <div class="event">
+                    <div class="event-image">
+                        <a href="/displayEvent/{{event.get_event_id()}}"><img src="{{ url_for('static', filename= 'img/'+ event.get_image()) }}" width="500px" height="250px"></a>
+                    </div>
+                    <div class="event-info">
+                        <h4 class="title">
+                            <a href="/displayEvent/{{event.get_event_id()}}">{{ event.get_title() }}</a>
+                        </h4>
+                        <span>Date: {{ event.get_start_date() }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

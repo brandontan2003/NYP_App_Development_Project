@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" type="image/png" href="{{url_for('static', filename='img/favicon.png')}}">
+  <title> {% block title %}{% endblock %} </title>
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+  <link href="{{url_for('static', filename='css/nucleo-icons.css')}}" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="{{url_for('static', filename='css/nucleo-svg.css')}}" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link id="pagestyle" href="{{url_for('static', filename='css/material-dashboard.css')}}" rel="stylesheet" />
+
+</head>
+
+<body class="g-sidenav-show  bg-gray-200">
+  {% block navbar %}
+          {% include 'includes/_adminnavbar.html' %}
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+  <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur">
+    <div class="container-fluid py-1 px-3">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+          <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Events</li>
+        </ol>
+        <h6 class="font-weight-bolder mb-0">{% block body %}{% endblock %}</h6>
+      </nav>
+    </div>
+  </nav>
+  {% endblock %}
+
+  <div class="container-fluid">
+      {% block content %}
+      {% endblock %}
+
+  </div>
+</main>
+  {% block scripts %}
+  <script src="{{url_for('static', filename='js/core/popper.min.js')}}"></script>
+  <script src="{{url_for('static', filename='js/core/bootstrap.min.js')}}"></script>
+  <script src="{{url_for('static', filename='js/plugins/perfect-scrollbar.min.js')}}"></script>
+  <script src="{{url_for('static', filename='js/plugins/smooth-scrollbar.min.js')}}"></script>
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+{% extends "customerbase.html" %}
+{% block title %}Registered Events{% endblock %}
+
+{% block content %}
+<h4 style="text-decoration: underline">List of Registered Events</h4>
+<br>
+<h5>Upcoming Events</h5>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th class="text-uppercase text-secondary text-m font-weight-bolder opacity-7 ps-2">Title</th>
+        <th class="text-left text-uppercase text-secondary text-m font-weight-bolder opacity-7" colspan="2">Date & Time</th>
+        <th class="text-left text-uppercase text-secondary text-m font-weight-bolder opacity-7">Location</th>
+        <th class="text-secondary opacity-7"></th>
+    </tr>
+    </thead>
+    {% for event in upcoming_events_list %}
+    <tbody>
+        <tr>
+            <td>{{ event.get_title() }}</td>
+            <td>{{ event.get_start_date() }}</td>
+            <td>{{ event.get_start_time() }}</td>
+            <td>{{ event.get_location()}}</td>
+            <td>
+                <form action="{{url_for('delete_registered_event', id=event.get_event_id())}}" method="POST">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{event.get_event_id()}}">Cancel</button>
+                    <div class="modal" id="myModal_{{event.get_event_id()}}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Delete Confirmation</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to cancel your registration for {{event.get_title()}}?
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="submit" value="Delete" class="btn btn-danger">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+
+<br>
+<br>
+
+<h5>Past Events</h5>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th class="text-uppercase text-secondary text-m font-weight-bolder opacity-7 ps-2">Title</th>
+        <th class="text-left text-uppercase text-secondary text-m font-weight-bolder opacity-7" colspan="2">Date</th>
+        <th class="text-left text-uppercase text-secondary text-m font-weight-bolder opacity-7">Location</th>
+    </tr>
+    </thead>
+    {% for event in past_events_list %}
+    <tbody>
+        <tr>
+            <td>{{ event.get_title() }}</td>
+            <td>{{ event.get_start_date() }}</td>
+            <td>{{ event.get_start_time() }}</td>
+            <td>{{ event.get_location()}}</td>
+        </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+{% endblock %}

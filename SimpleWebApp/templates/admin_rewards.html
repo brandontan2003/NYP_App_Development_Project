@@ -1,0 +1,107 @@
+{% extends "adminbase.html" %}
+{% block title %}Library Loan System - Rewards {% endblock %}
+{{ super() }}
+{% block content %}
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+
+/* Float four columns side by side */
+.column {
+  float: left;
+  width: 25%;
+  padding: 0 10px;
+}
+
+/* Remove extra left and right margins, due to padding */
+.row {margin: 0 -5px;}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+
+/* Style the counter cards */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  text-align: center;
+  background-color: #f1f1f1;
+  margin-bottom: 20px;
+  max-width: 300px;
+}
+
+.card button {
+  border: none;
+  outline: 0;
+  padding: 12px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+.card button:hover {
+  opacity: 0.7;
+}
+
+.individual_point {
+  color: grey;
+}
+</style>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<body>
+<br>
+<h1 class="display-5">Statistics</h1>
+<p>Statistics for the <span><b>Top-5 Most Redeemed Rewards</b></span> for this month </p>
+<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+
+<script>
+var xValues = ["Old Change Kee", "NTUC", "Popular", "Bee Cheng Hiang", "Nature Republic"];
+var yValues = [250, 500, 200, 130, 180];
+var barColors = ["#BEE3DB", "#BCD8B7","#F8FA90","#FFD6BA","#BEB8EB"];
+new Chart("myChart", {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {
+      display: true,
+      text: "Number of rewards redeemed respectively"
+    }
+  }
+});
+</script>
+<br><br><br>
+
+{{ super() }}
+{% endblock %}
+

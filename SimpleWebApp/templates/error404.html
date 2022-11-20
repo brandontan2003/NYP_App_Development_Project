@@ -1,0 +1,25 @@
+{% extends "customerbase.html" %}
+{% block title %}Page Not Found{% endblock %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css?family=Fredoka+One" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}" />
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block content %}
+	<div id="notfound">
+		<div class="notfound">
+			<div class="notfound-404">
+				<h1>404</h1>
+			</div>
+			<h2>Oops, The Page you are looking for can't be found!</h2>
+            <br>
+			<a class="btn btn-success text text-light" href="/">Return To Homepage</a>
+		</div>
+	</div>
+{% endblock %}
+{% block footer %}{%- endblock footer %}
+{% block scripts %}{% endblock %}

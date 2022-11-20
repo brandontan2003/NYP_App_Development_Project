@@ -1,0 +1,46 @@
+{% extends "tablebase.html" %}
+{% block title %}OLIVIA - Events{% endblock %}
+{% block body %}Attendance Rate{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Attendance List</h1>
+{% for event in event_list %}
+<div align="left">
+  <a class="btn btn-warning" href="/retrieveEvent">Return to Dashboard</a>
+</div>
+<div align="right">
+  <a class="btn btn-success" href="/Export/{{event.get_event_id()}}">Export Attendance List</a>
+</div>
+{% endfor %}
+
+<div id="wrapper">
+  <div class="container-fluid">
+    {% for event in event_list %}
+    <h1 class="h3 mb-2 text-gray-800">{{ event.get_title() }} Attendance List</h1>
+    {% endfor %}
+    <div class="card shadow mb-4">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Number of Pax Attending</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for attend in attendance_list %}
+            <tr>
+              <td>User {{ attend.get_session_user() }}</td>
+              <td>{{ attend.get_attending_pax() }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
